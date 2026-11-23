@@ -1,0 +1,11 @@
+.yarn
+coverage
+dist
+playwright-report
+test-results
+yarn.lock
+
+# Local-only workflow documentation
+AGENTS.md
+PLAN.md
+PROGRESS.md
