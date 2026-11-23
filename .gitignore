@@ -1,8 +1,21 @@
-# Dependencies and build
+# Dependencies
 node_modules/
-dist/
 
-# Yarn
+# Build
+dist/
+dist-ssr/
+*.local
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Logs
+logs/
+*.log
+
+# Yarn 4
 .pnp.*
 .yarn/*
 !.yarn/patches
@@ -10,7 +23,22 @@ dist/
 !.yarn/releases
 !.yarn/versions
 
+# Editor
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.sw?
+
+# OS
+.DS_Store
+Thumbs.db
+
 # Local AI workflow
 /AGENTS.md
 /PLAN.md
 /PROGRESS.md
+
+# Test outputs
+coverage/
+playwright-report/
+test-results/
