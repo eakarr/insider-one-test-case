@@ -41,5 +41,5 @@ composition without imposing additional directory levels.
 Branches use `<type>/<verb>-<description>` in lowercase kebab-case, such as
 `feature/add-project-setup` or `fix/resolve-race-timing`.
 
-Commits follow Conventional Commits. The subject starts with an approved lowercase imperative verb,
-has no trailing period, and keeps the complete header at 100 characters or fewer.
+Commits follow Conventional Commits. Use an imperative description whose subject starts with a
+lowercase letter, has no trailing period, and keeps the complete header at 100 characters or fewer.
