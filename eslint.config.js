@@ -9,5 +9,11 @@ export default withVueTs(
   },
   pluginVue.configs['flat/essential'],
   vueTsConfigs.recommended,
+  {
+    name: 'app/component-names',
+    rules: {
+      'vue/multi-word-component-names': ['error', { ignores: ['Accordion', 'Button'] }],
+    },
+  },
   skipFormattingConfig,
 )

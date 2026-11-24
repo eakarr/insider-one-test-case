@@ -1,0 +1,6 @@
+export { default as Accordion } from './accordion/accordion.vue'
+export { default as Button } from './button/button.vue'
+export { default as DashboardPanel } from './dashboard-panel/dashboard-panel.vue'
+export { default as FlagIcon } from './icons/flag.vue'
+export { default as HorseIcon } from './icons/horse.vue'
+export { default as ThemeToggle } from './theme-toggle/theme-toggle.vue'
