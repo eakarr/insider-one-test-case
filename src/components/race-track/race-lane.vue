@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
-import type { IHorse } from '../../models/race'
-import { HorseIcon } from '../common'
+import type { IHorse } from '@/models/race'
+import { HorseIcon } from '@/components/common'
 
 interface IRaceLaneProps {
   laneNumber: number

@@ -24,7 +24,7 @@ const headingId = useId()
 </template>
 
 <style scoped lang="scss">
-@use '../../../styles/abstracts/breakpoints' as bp;
+@use '@/styles/abstracts/breakpoints' as bp;
 
 .dashboard-panel {
   display: flex;

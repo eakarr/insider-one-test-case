@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Button from '../button/button.vue'
+import Button from '@/components/common/button/button.vue'
 
 interface IThemeToggleProps {
   isDark: boolean

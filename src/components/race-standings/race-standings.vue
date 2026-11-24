@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { DashboardPanel, FlagIcon } from '../common'
-import type { IRaceStanding, TStandingsMode } from '../../models/race'
+import { DashboardPanel, FlagIcon } from '@/components/common'
+import type { IRaceStanding, TStandingsMode } from '@/models/race'
 
 interface IRaceStandingsProps {
   standings: readonly IRaceStanding[]
@@ -40,7 +40,7 @@ const titles: Record<TStandingsMode, string> = {
 </template>
 
 <style scoped lang="scss">
-@use '../../styles/abstracts/breakpoints' as bp;
+@use '@/styles/abstracts/breakpoints' as bp;
 
 .race-standings {
   &__empty {

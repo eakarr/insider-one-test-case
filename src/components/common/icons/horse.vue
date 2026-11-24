@@ -25,7 +25,7 @@ defineOptions({ name: 'HorseIcon' })
     height: 100%;
     background-color: var(--horse-color);
     // Crop the padded 838×307 source to its rightmost 254×256 region without resampling it.
-    mask: url('../../../assets/images/jockey.png') right top / auto calc(100% * 307 / 256) no-repeat;
+    mask: url('@/assets/images/jockey.png') right top / auto calc(100% * 307 / 256) no-repeat;
     content: '';
   }
 }

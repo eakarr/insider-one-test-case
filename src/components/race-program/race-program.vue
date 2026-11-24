@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { Accordion, DashboardPanel, FlagIcon } from '../common'
-import type { IRaceRoundPresentation, TRacePresentationStatus } from '../../models/race'
+import { Accordion, DashboardPanel, FlagIcon } from '@/components/common'
+import type { IRaceRoundPresentation, TRacePresentationStatus } from '@/models/race'
 
 interface IRaceProgramProps {
   rounds: readonly IRaceRoundPresentation[]

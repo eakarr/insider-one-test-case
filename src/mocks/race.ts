@@ -1,4 +1,4 @@
-import type { IHorse } from '../models/race'
+import type { IHorse } from '@/models/race'
 
 // TODO(Phase 3): Remove temporary race fixtures and preview logic
 // once the real race domain and store are implemented.

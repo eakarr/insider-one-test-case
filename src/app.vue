@@ -1,17 +1,18 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import horseRacingLogo from './assets/horse-racing.svg'
-import { ThemeToggle } from './components/common'
-import HorsePool from './components/horse-pool/horse-pool.vue'
-import RaceStandings from './components/race-standings/race-standings.vue'
-import RaceControls from './components/race-controls/race-controls.vue'
-import RaceTrack from './components/race-track/race-track.vue'
-import RaceResults from './components/race-results/race-results.vue'
-import RaceProgram from './components/race-program/race-program.vue'
-import { useTheme } from './composables/use-theme'
-import { RACE_DISTANCES } from './constants/race'
-import { mockHorses } from './mocks/race'
-import type { IHorsePoolGroup, IRaceDashboard, TStandingsMode } from './models/race'
+
+import horseRacingLogo from '@/assets/horse-racing.svg'
+import { ThemeToggle } from '@/components/common'
+import HorsePool from '@/components/horse-pool/horse-pool.vue'
+import RaceStandings from '@/components/race-standings/race-standings.vue'
+import RaceControls from '@/components/race-controls/race-controls.vue'
+import RaceTrack from '@/components/race-track/race-track.vue'
+import RaceResults from '@/components/race-results/race-results.vue'
+import RaceProgram from '@/components/race-program/race-program.vue'
+import { useTheme } from '@/composables/use-theme'
+import { RACE_DISTANCES } from '@/constants/race'
+import { mockHorses } from '@/mocks/race'
+import type { IHorsePoolGroup, IRaceDashboard, TStandingsMode } from '@/models/race'
 
 interface IAppProps {
   preview?: IRaceDashboard
@@ -105,7 +106,7 @@ const horsePoolGroups = computed<readonly IHorsePoolGroup[]>(() => {
 </template>
 
 <style scoped lang="scss">
-@use './styles/abstracts/breakpoints' as bp;
+@use '@/styles/abstracts/breakpoints' as bp;
 
 .app-shell {
   min-height: 100dvh;

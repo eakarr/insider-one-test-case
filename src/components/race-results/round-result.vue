@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import type { IRaceResultEntry } from '../../models/race'
-import { FlagIcon } from '../common'
+
+import type { IRaceResultEntry } from '@/models/race'
+import { FlagIcon } from '@/components/common'
 
 interface IRoundResultProps {
   entry: IRaceResultEntry

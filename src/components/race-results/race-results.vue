@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { Accordion, DashboardPanel } from '../common'
-import type { IRaceRoundPresentation } from '../../models/race'
+
+import { Accordion, DashboardPanel } from '@/components/common'
+import type { IRaceRoundPresentation } from '@/models/race'
+
 import RoundResult from './round-result.vue'
 
 interface IRaceResultsProps {

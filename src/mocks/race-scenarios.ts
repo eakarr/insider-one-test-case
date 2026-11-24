@@ -1,6 +1,7 @@
-import type { IRaceDashboard, IRaceRoundPresentation } from '../models/race'
+import type { IRaceDashboard, IRaceRoundPresentation } from '@/models/race'
+import { RACE_DISTANCES } from '@/constants/race'
+
 import { mockHorses } from './race'
-import { RACE_DISTANCES } from '../constants/race'
 
 // TODO(Phase 3): Remove temporary race fixtures and preview logic
 // once the real race domain and store are implemented.

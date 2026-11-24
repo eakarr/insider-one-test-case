@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed, useId } from 'vue'
 
-import type { IHorse, IHorsePoolGroup } from '../../models/race'
+import type { IHorse, IHorsePoolGroup } from '@/models/race'
+
 import HorsePoolItem from './horse-pool-item.vue'
 
 interface IHorsePoolProps {
@@ -69,7 +70,7 @@ const hasLeadingRanks = computed(
 </template>
 
 <style scoped lang="scss">
-@use '../../styles/abstracts/breakpoints' as bp;
+@use '@/styles/abstracts/breakpoints' as bp;
 
 .horse-pool {
   --flag-icon-width: 1.25rem;

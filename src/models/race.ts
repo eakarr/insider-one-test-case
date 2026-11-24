@@ -1,4 +1,4 @@
-import type { RACE_DISTANCES } from '../constants/race'
+import type { RACE_DISTANCES } from '@/constants/race'
 
 export interface IHorse {
   id: number

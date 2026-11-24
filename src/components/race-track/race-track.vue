@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { computed, useId } from 'vue'
 
-import { PARTICIPANTS_PER_RACE, RACE_DISTANCES } from '../../constants/race'
-import type { IRaceRoundPresentation } from '../../models/race'
-import { Button } from '../common'
+import { PARTICIPANTS_PER_RACE, RACE_DISTANCES } from '@/constants/race'
+import type { IRaceRoundPresentation } from '@/models/race'
+import { Button } from '@/components/common'
+
 import RaceLane from './race-lane.vue'
 
 interface IRaceTrackProps {
@@ -111,7 +112,7 @@ const lanes = computed(() =>
 </template>
 
 <style scoped lang="scss">
-@use '../../styles/abstracts/breakpoints' as bp;
+@use '@/styles/abstracts/breakpoints' as bp;
 
 .race-track {
   --lane-label-width: clamp(1.625rem, 3vw, 2.5rem);

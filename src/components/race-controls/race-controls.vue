@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Button } from '../common'
+import { Button } from '@/components/common'
 
 interface IRaceControlsProps {
   isGenerateDisabled?: boolean
@@ -43,7 +43,7 @@ const handleStartRace = () => emit('start-race')
 </template>
 
 <style scoped lang="scss">
-@use '../../styles/abstracts/breakpoints' as bp;
+@use '@/styles/abstracts/breakpoints' as bp;
 
 .race-controls {
   display: grid;
