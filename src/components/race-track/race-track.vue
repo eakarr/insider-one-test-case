@@ -431,8 +431,8 @@ async function handleRaceAgain() {
     z-index: 2;
     grid-area: 1 / 1;
     place-self: center;
-    width: min(20rem, calc(100% - var(--lane-label-width) - 1.25rem));
-    margin-inline-start: var(--lane-label-width);
+    width: min(20rem, calc(100% - 2rem));
+    margin-block-start: var(--marker-height);
     padding: var(--space-3);
     border: 1px solid var(--color-line);
     border-radius: var(--radius-medium);
@@ -445,7 +445,6 @@ async function handleRaceAgain() {
     &--complete {
       grid-row: 2;
       margin-block: var(--space-3);
-      margin-inline-start: 0;
       width: min(17rem, calc(100% - 2rem));
     }
   }
@@ -531,7 +530,6 @@ async function handleRaceAgain() {
 
     &__card {
       width: min(20rem, calc(100% - 2rem));
-      margin: 0;
       padding: var(--space-4);
 
       &--complete {
