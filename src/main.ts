@@ -1,3 +1,4 @@
+import { createPinia } from 'pinia'
 import { createApp } from 'vue'
 
 import type { IRaceDashboard } from '@/models/race'
@@ -20,20 +21,7 @@ async function mountDashboard() {
   }
 
   const app = createApp(App, { preview })
-  try {
-    const { createPinia } = await import('pinia')
-    app.use(createPinia())
-  } catch (error) {
-    if (
-      !import.meta.env.DEV ||
-      !(error instanceof DOMException) ||
-      error.name !== 'SecurityError'
-    ) {
-      throw error
-    }
-    // Pinia's development tooling can access storage while loading.
-    console.warn('Pinia development tooling could not access browser storage.', error)
-  }
+  app.use(createPinia())
   app.mount('#app')
 }
 

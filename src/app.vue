@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { shallowRef } from 'vue'
+
 import horseRacingLogo from '@/assets/horse-racing.svg'
 import { ThemeToggle } from '@/components/common'
 import HorsePool from '@/components/horse-pool/horse-pool.vue'
@@ -7,16 +9,19 @@ import RaceControls from '@/components/race-controls/race-controls.vue'
 import RaceTrack from '@/components/race-track/race-track.vue'
 import RaceResults from '@/components/race-results/race-results.vue'
 import RaceProgram from '@/components/race-program/race-program.vue'
-import { useRacePreview } from '@/composables/use-race-preview'
+import { useRacePresentation } from '@/composables/use-race-presentation'
 import { useTheme } from '@/composables/use-theme'
-import { RACE_DISTANCES } from '@/constants/race'
+import { TOTAL_RACE_ROUNDS } from '@/constants/race'
 import type { IRaceDashboard } from '@/models/race'
+import { useRaceStore } from '@/stores/race'
 
 interface IAppProps {
   preview?: IRaceDashboard
 }
 
 const props = defineProps<IAppProps>()
+const preview = shallowRef(import.meta.env.DEV ? props.preview : undefined)
+const race = useRaceStore()
 const { theme, toggleTheme } = useTheme()
 const {
   horses,
@@ -24,15 +29,28 @@ const {
   rounds,
   standings,
   canGenerateProgram,
-  isReadyToStart,
+  canStartRace,
   isDayComplete,
   isRaceDayInProgress,
   standingsMode,
   horsePoolGroups,
-  generateProgram: handleGenerateProgram,
-  startRace: handleStartRace,
-  raceAgain: handleRaceAgain,
-} = useRacePreview(props.preview)
+} = useRacePresentation(race, preview)
+
+function handleGenerateProgram() {
+  if (canGenerateProgram.value && race.generateProgram()) preview.value = undefined
+}
+
+function handleStartRace() {
+  if (!canStartRace.value) return
+  if (preview.value && !race.generateProgram()) return
+  if (race.startRace()) preview.value = undefined
+}
+
+function handleRaceAgain() {
+  if (!isDayComplete.value) return
+  if (preview.value) preview.value = undefined
+  else race.raceAgain()
+}
 </script>
 
 <template>
@@ -48,7 +66,7 @@ const {
           <ThemeToggle :is-dark="theme === 'dark'" @toggle="toggleTheme" />
           <RaceControls
             :is-generate-disabled="!canGenerateProgram"
-            :is-start-disabled="!isReadyToStart"
+            :is-start-disabled="!canStartRace"
             :is-race-day-in-progress="isRaceDayInProgress"
             :is-generate-primary="!currentRound"
             @generate-program="handleGenerateProgram"
@@ -70,7 +88,7 @@ const {
       <RaceStandings :standings="standings" :mode="standingsMode" />
       <div class="dashboard-layout__side-panels">
         <RaceProgram :rounds="rounds" :current-round="currentRound?.roundNumber" />
-        <RaceResults :rounds="rounds" :total-rounds="RACE_DISTANCES.length" />
+        <RaceResults :rounds="rounds" :total-rounds="TOTAL_RACE_ROUNDS" />
       </div>
       <HorsePool class="dashboard-layout__horses" :horses="horses" :groups="horsePoolGroups" />
     </main>

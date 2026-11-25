@@ -1,6 +1,6 @@
 import type { IRaceResultEntry, IRaceRoundPresentation } from '@/models/race'
 
-// TODO(Phase 3): Replace these fixture results with race domain results.
+// Fixed finishing times for development previews.
 const firstFinishTimes = [71.14, 83.62, 96.23, 108.74, 121.09, 134.56]
 const finishTimeOffsets = [0, 0.21, 0.38, 0.57, 0.83, 1.04, 1.27, 1.48, 1.72, 2.06]
 

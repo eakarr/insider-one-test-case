@@ -1,10 +1,10 @@
 import type { IRaceDashboard, IRaceRoundPresentation } from '@/models/race'
 
+import { mockHorses } from './race'
 import { createMockRaceProgram } from './race-program'
 import { createMockRoundResults } from './race-results'
 
-// TODO(Phase 3): Remove temporary race fixtures and preview logic
-// once the real race domain and store are implemented.
+// Fixed dashboard snapshots for development previews only.
 
 const scenarios = {
   ready: { current: 1, completed: 0, isActive: false },
@@ -18,6 +18,7 @@ type TMockRaceScenario = keyof typeof scenarios
 const activeProgress = [62, 77, 48, 69, 55, 41, 73, 58, 65, 50]
 
 export function getMockRaceScenario(name: string | null): IRaceDashboard | undefined {
+  if (name === 'initial') return { horses: mockHorses, rounds: [], standings: [] }
   if (!name || !Object.hasOwn(scenarios, name)) return
   const scenario = scenarios[name as TMockRaceScenario]
 
@@ -48,5 +49,5 @@ export function getMockRaceScenario(name: string | null): IRaceDashboard | undef
       : [...round.participants]
           .sort((a, b) => b.progress - a.progress || a.lane - b.lane)
           .map(({ horse }, index) => ({ position: index + 1, horse }))
-  return { rounds, round, standings }
+  return { horses: mockHorses, rounds, round, standings }
 }
