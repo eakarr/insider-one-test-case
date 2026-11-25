@@ -4,6 +4,7 @@ import { Button } from '@/components/common'
 interface IRaceControlsProps {
   isGenerateDisabled?: boolean
   isStartDisabled?: boolean
+  isRaceDayInProgress?: boolean
   isGeneratePrimary?: boolean
 }
 
@@ -37,7 +38,20 @@ const handleStartRace = () => emit('start-race')
       :disabled="isStartDisabled"
       @click="handleStartRace"
     >
-      Start race
+      <span class="race-controls__start-label">
+        <span
+          class="race-controls__label"
+          :class="{ 'race-controls__label--hidden': isRaceDayInProgress }"
+        >
+          Start race
+        </span>
+        <span
+          class="race-controls__label"
+          :class="{ 'race-controls__label--hidden': !isRaceDayInProgress }"
+        >
+          Racing...
+        </span>
+      </span>
     </Button>
   </div>
 </template>
@@ -59,6 +73,18 @@ const handleStartRace = () => emit('start-race')
 
     @media (min-width: bp.$sm) {
       padding-inline: var(--space-3);
+    }
+  }
+
+  &__start-label {
+    display: inline-grid;
+  }
+
+  &__label {
+    grid-area: 1 / 1;
+
+    &--hidden {
+      visibility: hidden;
     }
   }
 }

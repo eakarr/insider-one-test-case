@@ -20,9 +20,13 @@ function createLineupStandings(round: IRaceRoundPresentation): readonly IRaceSta
   return round.participants.map(({ lane, horse }) => ({ position: lane, horse }))
 }
 
+function createInitialDashboard(): IRaceDashboard {
+  return { rounds: [], standings: [] }
+}
+
 // TODO(Phase 3): Replace this temporary state with the race domain and Pinia store.
 export function useRacePreview(initialPreview?: IRaceDashboard) {
-  const dashboard = shallowRef<IRaceDashboard>(initialPreview ?? { rounds: [], standings: [] })
+  const dashboard = shallowRef(initialPreview ?? createInitialDashboard())
   let lifecycleTimer: ReturnType<typeof setTimeout> | undefined
 
   onScopeDispose(clearLifecycleTimer)
@@ -36,6 +40,11 @@ export function useRacePreview(initialPreview?: IRaceDashboard) {
     () =>
       currentRound.value?.roundNumber === RACE_DISTANCES.length &&
       currentRound.value.status === 'completed',
+  )
+  const isRaceDayInProgress = computed(
+    () =>
+      currentRound.value?.status === 'active' ||
+      (currentRound.value?.status === 'completed' && !isDayComplete.value),
   )
   const standingsMode = computed<TStandingsMode>(() => {
     if (isReadyToStart.value) return 'lineup'
@@ -87,6 +96,13 @@ export function useRacePreview(initialPreview?: IRaceDashboard) {
   function startRace() {
     const round = currentRound.value
     if (round) activateRound(round)
+  }
+
+  function raceAgain() {
+    if (!isDayComplete.value) return
+
+    clearLifecycleTimer()
+    dashboard.value = createInitialDashboard()
   }
 
   function clearLifecycleTimer() {
@@ -158,9 +174,11 @@ export function useRacePreview(initialPreview?: IRaceDashboard) {
     canGenerateProgram,
     isReadyToStart,
     isDayComplete,
+    isRaceDayInProgress,
     standingsMode,
     horsePoolGroups,
     generateProgram,
     startRace,
+    raceAgain,
   }
 }
