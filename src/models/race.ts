@@ -88,10 +88,3 @@ export interface IRaceRoundPresentation {
   participants: readonly IRaceParticipant[]
   results: readonly IRaceResultEntry[]
 }
-
-export interface IRaceDashboard {
-  horses: readonly IHorse[]
-  rounds: readonly IRaceRoundPresentation[]
-  round?: IRaceRoundPresentation
-  standings: readonly IRaceStanding[]
-}
