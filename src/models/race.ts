@@ -47,6 +47,32 @@ export interface IRaceRoundResult {
   readonly finishers: readonly IRaceFinisher[]
 }
 
+type TPausableRacePhase =
+  | { readonly status: 'countdown'; readonly roundNumber: number; readonly remainingMs: number }
+  | {
+      readonly status: 'running'
+      readonly roundNumber: number
+      readonly elapsedMs: number
+      readonly participants: readonly IRaceParticipantProgress[]
+    }
+  | { readonly status: 'round-complete'; readonly remainingMs: number }
+
+interface IRaceDayProgress {
+  readonly program: IRaceProgram
+  /** Completed round results in program order. */
+  readonly results: readonly IRaceRoundResult[]
+}
+
+export type TRaceDayState =
+  | { readonly status: 'idle' }
+  | { readonly status: 'ready'; readonly program: IRaceProgram }
+  | (IRaceDayProgress &
+      (
+        | TPausableRacePhase
+        | { readonly status: 'paused'; readonly interrupted: TPausableRacePhase }
+        | { readonly status: 'day-complete' }
+      ))
+
 // Presentation contracts used by the current dashboard.
 export interface IHorse extends IHorseData {
   colorName: string
