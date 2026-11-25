@@ -21,6 +21,9 @@ export function useTheme() {
   function applyTheme(nextTheme: TTheme) {
     theme.value = nextTheme
     root.dataset.theme = nextTheme
+    document
+      .querySelector('meta[name="theme-color"]')
+      ?.setAttribute('content', nextTheme === 'dark' ? '#111714' : '#eef2ef')
   }
 
   function syncTheme() {
