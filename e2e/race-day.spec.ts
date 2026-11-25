@@ -72,7 +72,7 @@ test('runs a real-time race day at 3× and starts over with the same horse pool 
   await speed.click()
   await header.getByRole('button', { name: 'Start race', exact: true }).click()
 
-  await expect(generate).toBeDisabled()
+  await expect(header.getByRole('button', { name: 'Reset race' })).toBeEnabled()
   for (const round of [1, 2, 3, 4, 5, 6]) {
     await expect(announcement).toHaveText(
       new RegExp(`^Round ${round}, .*Starting in three seconds\\.$`),
@@ -146,4 +146,59 @@ test('freezes active progress while paused and continues after changing speed', 
 
   await expect(pause).toBeEnabled()
   await expect(lanes.first()).not.toHaveText(pausedLanes[0] ?? '')
+})
+
+test('confirms reset, preserves the horse pool and speed, and permits a fresh race', async ({
+  page,
+}) => {
+  const header = page.getByRole('banner')
+  const track = page.getByRole('region', { name: 'Race track' })
+  const results = page.getByRole('region', { name: 'Results', exact: true })
+  const generate = header.getByRole('button', { name: 'Generate program' })
+  const start = header.getByRole('button', { name: 'Start race', exact: true })
+  const reset = header.getByRole('button', { name: 'Reset race' })
+  const speed = header.getByRole('button', { name: '3 times playback speed' })
+  await generate.click()
+  await speed.click()
+  await start.click()
+  page.once('dialog', (dialog) => dialog.dismiss())
+  await reset.click()
+  await expect(reset).toBeEnabled()
+  await header.getByRole('button', { name: 'Pause', exact: true }).click()
+  page.once('dialog', (dialog) => dialog.accept())
+  await reset.click()
+  await expect(track.getByRole('heading', { name: 'Ready to race?' })).toBeVisible()
+  await expect(generate).toBeFocused()
+  await expect(start).toBeDisabled()
+  await expect(results.getByText('0 of 6', { exact: true })).toBeVisible()
+  await expect(speed).toHaveAttribute('aria-pressed', 'true')
+  await generate.click()
+  await start.click()
+  await expect(track.getByRole('status')).toHaveText(/Round 1, .*Starting in three seconds\./)
+})
+
+test('respects reduced motion without stopping race progress', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  const clockStart = new Date('2026-01-01T00:00:00Z')
+  await page.clock.install({ time: clockStart })
+  await page.clock.pauseAt(new Date(clockStart.getTime() + 60_000))
+  const header = page.getByRole('banner')
+  const track = page.getByRole('region', { name: 'Race track' })
+  await header.getByRole('button', { name: 'Generate program' }).click()
+  await header.getByRole('button', { name: 'Start race', exact: true }).click()
+  const cue = track.locator('.race-countdown__cue')
+  await expect(cue).toHaveCSS('animation-name', 'none')
+  await page.clock.runFor(3800)
+  const lane = track.getByRole('list', { name: 'Race lanes' }).getByRole('listitem').first()
+  await expect(lane).toContainText(/[1-9]\d*% complete/)
+  const horse = lane.locator('.horse-icon')
+  expect(
+    await horse.evaluate(
+      (element) =>
+        element.ownerDocument.defaultView?.getComputedStyle(element, '::after').animationName,
+    ),
+  ).toBe('none')
+  const progress = (await lane.textContent()) ?? ''
+  await page.clock.runFor(500)
+  await expect(lane).not.toHaveText(progress)
 })
