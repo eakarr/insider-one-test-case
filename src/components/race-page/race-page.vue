@@ -59,6 +59,17 @@ function handleResumeRace() {
   if (canResume.value) race.resume()
 }
 
+function handleResetRace() {
+  if (!canPause.value && !canResume.value) return
+  const wasRunning = canPause.value
+  if (wasRunning) race.pause()
+  if (window.confirm('Reset the race day? All current results will be lost.')) {
+    race.resetRace()
+  } else if (wasRunning) {
+    race.resume()
+  }
+}
+
 function handleRaceAgain() {
   if (isDayComplete.value) race.raceAgain()
 }
@@ -82,11 +93,13 @@ function handleRaceAgain() {
             :is-start-disabled="!canStartRace"
             :can-pause="canPause"
             :can-resume="canResume"
+            :can-reset="canPause || canResume"
             :is-generate-primary="!currentRound"
             @generate-program="handleGenerateProgram"
             @start-race="handleStartRace"
             @pause-race="handlePauseRace"
             @resume-race="handleResumeRace"
+            @reset-race="handleResetRace"
           />
         </div>
       </div>

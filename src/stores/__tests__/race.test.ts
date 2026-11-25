@@ -316,3 +316,31 @@ describe('complete race days', () => {
     expect(partitioned.standings).toEqual(whole.standings)
   })
 })
+
+it.each(['ready', 'countdown', 'running', 'round-complete', 'paused'] as const)(
+  'resets a %s race without retaining results or accepting stale updates',
+  (phase) => {
+    const race = createSeededRace()
+    const horses = race.horses
+    expect(race.resetRace()).toBe(false)
+    race.generateProgram()
+    if (phase !== 'ready') race.startRace()
+    if (phase === 'running' || phase === 'round-complete') {
+      race.advanceTime(RACE_COUNTDOWN_MS, race.state)
+    }
+    if (phase === 'round-complete') race.advanceTime(ROUND_BUDGET_MS, race.state)
+    if (phase === 'paused') race.pause()
+    expect(race.status).toBe(phase)
+    const stale = race.state
+    expect(race.resetRace()).toBe(true)
+    expect(race.status).toBe('idle')
+    expect(race.horses).toBe(horses)
+    expect(race.program).toBeUndefined()
+    expect(race.results).toEqual([])
+    expect(race.participants).toEqual([])
+    expect(race.advanceTime(100, stale)).toBeUndefined()
+    startCountdown(race)
+    expect(race.advanceTime(100, stale)).toBeUndefined()
+    completeRaceDay(race)
+  },
+)

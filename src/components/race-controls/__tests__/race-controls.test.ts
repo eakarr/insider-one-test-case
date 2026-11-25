@@ -80,3 +80,23 @@ it('emits Start, Pause, and Resume as the available race action changes', async 
     wrapper.unmount()
   }
 })
+
+it('replaces generation with reset while a race can be interrupted', async () => {
+  const wrapper = mount(RaceControls, {
+    props: { playbackSpeed: 1, isGenerateDisabled: true, canReset: true, canPause: true },
+  })
+  try {
+    const action = wrapper.get('button:first-child')
+    expect(action.text()).toBe('Reset race')
+    expect(action.attributes('disabled')).toBeUndefined()
+    await action.trigger('click')
+    expect(wrapper.emitted('reset-race')).toEqual([[]])
+    expect(wrapper.emitted('generate-program')).toBeUndefined()
+    await wrapper.setProps({ canReset: false, canPause: false, isGenerateDisabled: false })
+    expect(action.text()).toBe('Generate program')
+    await action.trigger('click')
+    expect(wrapper.emitted('generate-program')).toEqual([[]])
+  } finally {
+    wrapper.unmount()
+  }
+})

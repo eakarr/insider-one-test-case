@@ -202,12 +202,16 @@ export const useRaceStore = defineStore('race', () => {
     return true
   }
 
-  function raceAgain(): boolean {
-    if (status.value !== 'day-complete') return false
+  function resetRace(): boolean {
+    if (status.value === 'idle') return false
 
     preparedRounds = []
     state.value = { status: 'idle' }
     return true
+  }
+
+  function raceAgain(): boolean {
+    return status.value === 'day-complete' && resetRace()
   }
 
   return {
@@ -227,5 +231,6 @@ export const useRaceStore = defineStore('race', () => {
     pause,
     resume,
     raceAgain,
+    resetRace,
   }
 })

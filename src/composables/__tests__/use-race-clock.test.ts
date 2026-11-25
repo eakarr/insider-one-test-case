@@ -273,3 +273,21 @@ it('preserves countdowns, inter-round delays, and all seeded results at every sp
   expect(runDay(2)).toEqual(normalResults)
   expect(runDay(3)).toEqual(normalResults)
 })
+
+it('cancels the old clock on reset and starts a fresh timestamp baseline', () => {
+  const { race, frames, nextFrame, frame, startRunning } = mountClock()
+  startRunning()
+  frame(1000)
+  const [, staleCallback] = nextFrame()
+  expect(race.resetRace()).toBe(true)
+  expect(frames.size).toBe(0)
+  race.generateProgram()
+  race.startRace()
+  const freshState = race.state
+  staleCallback(2000)
+  expect(race.state).toBe(freshState)
+  frame(3000)
+  expect(race.state).toBe(freshState)
+  frame(3050)
+  expect(race.state).toMatchObject({ remainingMs: RACE_COUNTDOWN_MS - 50 })
+})
