@@ -12,7 +12,7 @@ export default withVueTs(
   {
     name: 'app/component-names',
     rules: {
-      'vue/multi-word-component-names': ['error', { ignores: ['Accordion', 'Button'] }],
+      'vue/multi-word-component-names': 'off',
     },
   },
   skipFormattingConfig,

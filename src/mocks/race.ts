@@ -1,5 +1,5 @@
 import { HORSE_IDENTITIES } from '@/constants/horse'
-import type { IHorse } from '@/models/race'
+import type { IHorse } from '@/models/horse'
 
 // Fixed conditions for development previews.
 

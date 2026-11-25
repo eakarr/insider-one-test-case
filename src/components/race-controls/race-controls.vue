@@ -57,7 +57,7 @@ const handleStartRace = () => emit('start-race')
 </template>
 
 <style scoped lang="scss">
-@use '@/styles/abstracts/breakpoints' as bp;
+@use '@/styles/breakpoints' as bp;
 
 .race-controls {
   display: grid;

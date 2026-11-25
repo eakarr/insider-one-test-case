@@ -1,16 +1,8 @@
 import type { RACE_DISTANCES } from '@/constants/race'
 
-/** Distances in meters, derived from the race-day configuration. */
+import type { IHorse, TRaceHorse } from './horse'
+
 export type TRaceDistance = (typeof RACE_DISTANCES)[number]
-
-interface IHorseData {
-  id: number
-  name: string
-  color: string
-  condition: number
-}
-
-export type TRaceHorse = Readonly<IHorseData>
 
 export interface IRaceLaneAssignment {
   readonly lane: number
@@ -29,16 +21,13 @@ export interface IRaceProgram {
 
 export interface IRaceParticipantProgress {
   readonly lane: number
-  /** Normalized fraction of the round distance, from 0 to 1. */
   readonly progress: number
-  /** Elapsed simulation time at the finish, in milliseconds. */
   readonly finishTimeMs?: number
 }
 
 export interface IRaceFinisher {
   readonly lane: number
   readonly position: number
-  /** Elapsed simulation time at the finish, in milliseconds. */
   readonly finishTimeMs: number
 }
 
@@ -59,7 +48,6 @@ type TPausableRacePhase =
 
 interface IRaceDayProgress {
   readonly program: IRaceProgram
-  /** Completed round results in program order. */
   readonly results: readonly IRaceRoundResult[]
 }
 
@@ -73,11 +61,6 @@ export type TRaceDayState =
         | { readonly status: 'day-complete' }
       ))
 
-// Presentation contracts used by the current dashboard.
-export interface IHorse extends IHorseData {
-  colorName: string
-}
-
 export type TRacePresentationStatus = 'completed' | 'active' | 'scheduled'
 
 export type TStandingsMode = 'lineup' | 'live' | 'final'
@@ -85,18 +68,12 @@ export type TStandingsMode = 'lineup' | 'live' | 'final'
 export interface IRaceParticipant {
   lane: number
   horse: IHorse
-  /** Track progress as a percentage, from 0 to 100. */
   progress: number
 }
 
 export interface IRaceStanding {
   position: number
   horse: IHorse
-}
-
-export interface IHorsePoolGroup {
-  label: string
-  entries: readonly { horse: IHorse; lane?: number; position?: number }[]
 }
 
 export interface IRaceResultEntry extends IRaceStanding {

@@ -40,7 +40,7 @@ const titles: Record<TStandingsMode, string> = {
 </template>
 
 <style scoped lang="scss">
-@use '@/styles/abstracts/breakpoints' as bp;
+@use '@/styles/breakpoints' as bp;
 
 .race-standings {
   &__empty {

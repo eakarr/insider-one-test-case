@@ -96,7 +96,7 @@ function handleRaceAgain() {
 </template>
 
 <style scoped lang="scss">
-@use '@/styles/abstracts/breakpoints' as bp;
+@use '@/styles/breakpoints' as bp;
 
 .app-shell {
   min-height: 100dvh;
