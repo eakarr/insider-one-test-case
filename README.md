@@ -26,6 +26,27 @@ yarn build
 
 Use `yarn format` and `yarn lint:fix` to apply safe formatting and lint fixes.
 
+## Tests
+
+```sh
+yarn test
+yarn test:coverage
+yarn playwright install chromium firefox webkit
+yarn test:e2e
+```
+
+Vitest runs the unit and component tests co-located in `src/**/__tests__/`. Use `yarn test:watch`
+while editing. The coverage command prints a summary, writes `coverage/index.html`, and checks
+global minimums of 90% statements, 85% branches, 90% functions, and 92% lines.
+
+Playwright builds the app and starts Vite preview for the specs in `e2e/`. Chromium runs the race
+journeys and mobile checks. Firefox and WebKit run the mobile checks. Use `yarn test:e2e:ui` to
+inspect tests interactively.
+
+GitHub Actions runs lint, formatting, typecheck, Vitest coverage, and the production build.
+A separate job runs all three Playwright projects. The workflow uploads HTML coverage and
+retains screenshots and traces from browser failures.
+
 ## Architecture
 
 The application follows a layered modular-monolith structure under `src/`. Vue components render
