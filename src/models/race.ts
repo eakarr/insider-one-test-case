@@ -27,6 +27,26 @@ export interface IRaceProgram {
   readonly rounds: readonly IRaceScheduledRound[]
 }
 
+export interface IRaceParticipantProgress {
+  readonly lane: number
+  /** Normalized fraction of the round distance, from 0 to 1. */
+  readonly progress: number
+  /** Elapsed simulation time at the finish, in milliseconds. */
+  readonly finishTimeMs?: number
+}
+
+export interface IRaceFinisher {
+  readonly lane: number
+  readonly position: number
+  /** Elapsed simulation time at the finish, in milliseconds. */
+  readonly finishTimeMs: number
+}
+
+export interface IRaceRoundResult {
+  readonly roundNumber: number
+  readonly finishers: readonly IRaceFinisher[]
+}
+
 // Presentation contracts used by the current dashboard.
 export interface IHorse extends IHorseData {
   colorName: string
