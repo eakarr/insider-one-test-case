@@ -12,6 +12,7 @@ interface IRaceControlsProps {
   isGeneratePrimary?: boolean
   canPause?: boolean
   canResume?: boolean
+  canReset?: boolean
 }
 
 const props = withDefaults(defineProps<IRaceControlsProps>(), {
@@ -22,12 +23,16 @@ const props = withDefaults(defineProps<IRaceControlsProps>(), {
 const emit = defineEmits<{
   'change-speed': [speed: TRacePlaybackSpeed]
   'generate-program': []
+  'reset-race': []
   'start-race': []
   'pause-race': []
   'resume-race': []
 }>()
 
-const handleGenerateProgram = () => emit('generate-program')
+function handleProgramAction() {
+  if (props.canReset) emit('reset-race')
+  else if (!props.isGenerateDisabled) emit('generate-program')
+}
 const actionLabel = computed(() => {
   if (props.canResume) return 'Resume'
   if (props.canPause) return 'Pause'
@@ -46,10 +51,10 @@ function handleRaceAction() {
     <Button
       class="race-controls__button"
       :variant="isGeneratePrimary ? 'primary' : 'secondary'"
-      :disabled="isGenerateDisabled"
-      @click="handleGenerateProgram"
+      :disabled="isGenerateDisabled && !canReset"
+      @click="handleProgramAction"
     >
-      Generate program
+      {{ canReset ? 'Reset race' : 'Generate program' }}
     </Button>
     <Button
       class="race-controls__button"
