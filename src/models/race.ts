@@ -1,14 +1,36 @@
 import type { RACE_DISTANCES } from '@/constants/race'
 
-export interface IHorse {
+/** Distances in meters, derived from the race-day configuration. */
+export type TRaceDistance = (typeof RACE_DISTANCES)[number]
+
+interface IHorseData {
   id: number
   name: string
   color: string
-  colorName: string
   condition: number
 }
 
-export type TRaceDistance = (typeof RACE_DISTANCES)[number]
+export type TRaceHorse = Readonly<IHorseData>
+
+export interface IRaceLaneAssignment {
+  readonly lane: number
+  readonly horse: TRaceHorse
+}
+
+export interface IRaceScheduledRound {
+  readonly roundNumber: number
+  readonly distance: TRaceDistance
+  readonly participants: readonly IRaceLaneAssignment[]
+}
+
+export interface IRaceProgram {
+  readonly rounds: readonly IRaceScheduledRound[]
+}
+
+// Presentation contracts used by the current dashboard.
+export interface IHorse extends IHorseData {
+  colorName: string
+}
 
 export type TRacePresentationStatus = 'completed' | 'active' | 'scheduled'
 
