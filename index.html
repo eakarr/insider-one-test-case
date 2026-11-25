@@ -8,6 +8,11 @@
       content="A horse-racing case study built with Vue, TypeScript, and Pinia."
     />
     <title>Insider One Horse Racing</title>
+    <meta name="theme-color" content="#eef2ef" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Horse Racing" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
     <link rel="icon" type="image/svg+xml" href="/src/assets/horse-racing.svg" />
     <script>
       // Resolve the theme before the first paint, including when storage is blocked.
@@ -24,10 +29,70 @@
             : matchMedia('(prefers-color-scheme: dark)').matches
               ? 'dark'
               : 'light'
+        document.querySelector('meta[name="theme-color"]').content =
+          document.documentElement.dataset.theme === 'dark' ? '#111714' : '#eef2ef'
       })()
     </script>
+    <style>
+      #startup-screen {
+        position: fixed;
+        inset: 0;
+        z-index: 1000;
+        display: grid;
+        place-content: center;
+        justify-items: center;
+        gap: 1rem;
+        background: #eef2ef;
+        color: #12221b;
+        font:
+          600 1.5rem/1.5 system-ui,
+          sans-serif;
+        pointer-events: auto;
+      }
+
+      [data-theme='dark'] #startup-screen {
+        background: #111714;
+        color: #edf3ee;
+      }
+
+      #startup-screen img {
+        width: 88px;
+        height: 88px;
+        border-radius: 22px;
+      }
+
+      #startup-screen[data-ready] {
+        animation: startup-exit 180ms ease-out forwards;
+      }
+
+      @keyframes startup-exit {
+        to {
+          opacity: 0;
+          visibility: hidden;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        #startup-screen[data-ready] {
+          display: none;
+          animation: none;
+        }
+      }
+    </style>
   </head>
   <body>
+    <div id="startup-screen" aria-hidden="true">
+      <img src="/icons/icon-192.png" width="88" height="88" alt="" />
+      <span>Horse Racing</span>
+    </div>
+    <noscript>
+      <style>
+        #startup-screen {
+          display: none;
+        }
+      </style>
+      JavaScript is required to run Horse Racing.
+    </noscript>
     <div id="app"></div>
     <script type="module" src="/src/bootstrap.ts"></script>
   </body>
