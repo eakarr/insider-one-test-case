@@ -4,6 +4,10 @@
 
 A responsive horse-racing simulation built with Vue 3, TypeScript and Pinia for the Insider One frontend developer case study. Generate a race program, watch its six rounds unfold, and follow the standings and results in real time.
 
+## Preview
+
+![Horse Racing dashboard during a race in dark mode](docs/images/horse-racing.png)
+
 ## Features
 
 - 20 horses with unique identities and colors, and randomly generated conditions from 1 to 100.
