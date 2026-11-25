@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-
 import horseRacingLogo from '@/assets/horse-racing.svg'
 import { ThemeToggle } from '@/components/common'
 import HorsePool from '@/components/horse-pool/horse-pool.vue'
@@ -9,59 +7,30 @@ import RaceControls from '@/components/race-controls/race-controls.vue'
 import RaceTrack from '@/components/race-track/race-track.vue'
 import RaceResults from '@/components/race-results/race-results.vue'
 import RaceProgram from '@/components/race-program/race-program.vue'
+import { useRacePreview } from '@/composables/use-race-preview'
 import { useTheme } from '@/composables/use-theme'
 import { RACE_DISTANCES } from '@/constants/race'
-import { mockHorses } from '@/mocks/race'
-import type { IHorsePoolGroup, IRaceDashboard, TStandingsMode } from '@/models/race'
+import type { IRaceDashboard } from '@/models/race'
 
 interface IAppProps {
   preview?: IRaceDashboard
 }
 
 const props = defineProps<IAppProps>()
-const emit = defineEmits<{ 'generate-program': []; 'start-race': []; 'race-again': [] }>()
 const { theme, toggleTheme } = useTheme()
-const currentRound = computed(() => props.preview?.round)
-const rounds = computed(() => props.preview?.rounds ?? [])
-const isRaceActive = computed(() => currentRound.value?.status === 'active')
-const isReadyToStart = computed(() => currentRound.value?.status === 'scheduled')
-const isDayComplete = computed(
-  () =>
-    currentRound.value?.roundNumber === RACE_DISTANCES.length &&
-    currentRound.value.status === 'completed',
-)
-const standingsMode = computed<TStandingsMode>(() => {
-  if (isReadyToStart.value) return 'lineup'
-  if (currentRound.value?.status === 'completed') return 'final'
-  return 'live'
-})
-const horsePoolGroups = computed<readonly IHorsePoolGroup[]>(() => {
-  const round = currentRound.value
-  if (!round) return []
-
-  const lanes = new Map(round.participants.map(({ horse, lane }) => [horse.id, lane]))
-  const entries = (props.preview?.standings ?? []).map(({ horse, position }) => ({
-    horse,
-    lane: lanes.get(horse.id),
-    position: round.status === 'scheduled' ? undefined : position,
-  }))
-
-  return [
-    {
-      label:
-        round.status === 'scheduled'
-          ? 'Selected horses'
-          : round.status === 'active'
-            ? 'Live standings'
-            : 'Final standings',
-      entries,
-    },
-    {
-      label: 'Not racing',
-      entries: mockHorses.filter(({ id }) => !lanes.has(id)).map((horse) => ({ horse })),
-    },
-  ]
-})
+const {
+  horses,
+  currentRound,
+  rounds,
+  standings,
+  canGenerateProgram,
+  isReadyToStart,
+  isDayComplete,
+  standingsMode,
+  horsePoolGroups,
+  generateProgram: handleGenerateProgram,
+  startRace: handleStartRace,
+} = useRacePreview(props.preview)
 </script>
 
 <template>
@@ -76,11 +45,11 @@ const horsePoolGroups = computed<readonly IHorsePoolGroup[]>(() => {
         <div class="dashboard-header__controls">
           <ThemeToggle :is-dark="theme === 'dark'" @toggle="toggleTheme" />
           <RaceControls
-            :is-generate-disabled="isRaceActive || isDayComplete"
+            :is-generate-disabled="!canGenerateProgram"
             :is-start-disabled="!isReadyToStart"
             :is-generate-primary="!currentRound"
-            @generate-program="emit('generate-program')"
-            @start-race="emit('start-race')"
+            @generate-program="handleGenerateProgram"
+            @start-race="handleStartRace"
           />
         </div>
       </div>
@@ -91,16 +60,15 @@ const horsePoolGroups = computed<readonly IHorsePoolGroup[]>(() => {
         class="dashboard-layout__workspace"
         :round="currentRound"
         :is-day-complete="isDayComplete"
-        :horse-count="mockHorses.length"
-        @generate-program="emit('generate-program')"
-        @race-again="emit('race-again')"
+        :horse-count="horses.length"
+        @generate-program="handleGenerateProgram"
       />
-      <RaceStandings :standings="preview?.standings ?? []" :mode="standingsMode" />
+      <RaceStandings :standings="standings" :mode="standingsMode" />
       <div class="dashboard-layout__side-panels">
         <RaceProgram :rounds="rounds" :current-round="currentRound?.roundNumber" />
         <RaceResults :rounds="rounds" :total-rounds="RACE_DISTANCES.length" />
       </div>
-      <HorsePool class="dashboard-layout__horses" :horses="mockHorses" :groups="horsePoolGroups" />
+      <HorsePool class="dashboard-layout__horses" :horses="horses" :groups="horsePoolGroups" />
     </main>
   </div>
 </template>
