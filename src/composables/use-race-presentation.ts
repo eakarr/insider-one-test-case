@@ -3,8 +3,8 @@ import { computed, type Ref } from 'vue'
 
 import { HORSE_IDENTITIES } from '@/constants/horse'
 import { TOTAL_RACE_ROUNDS } from '@/constants/race'
+import type { IHorsePoolGroup } from '@/models/horse'
 import type {
-  IHorsePoolGroup,
   IRaceDashboard,
   IRaceRoundPresentation,
   IRaceStanding,

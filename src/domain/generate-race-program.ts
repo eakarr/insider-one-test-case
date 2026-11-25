@@ -1,7 +1,8 @@
 import { HORSE_POOL_SIZE } from '@/constants/horse'
 import { PARTICIPANTS_PER_RACE, RACE_DISTANCES } from '@/constants/race'
 import { randomInt, type TRandomSource } from '@/helpers/random'
-import type { IRaceProgram, TRaceHorse } from '@/models/race'
+import type { TRaceHorse } from '@/models/horse'
+import type { IRaceProgram } from '@/models/race'
 
 export function generateRaceProgram(
   horses: readonly TRaceHorse[],

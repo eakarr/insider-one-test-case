@@ -1,6 +1,6 @@
 import { HORSE_CONDITION_RANGE, HORSE_IDENTITIES } from '@/constants/horse'
 import { randomInt, type TRandomSource } from '@/helpers/random'
-import type { TRaceHorse } from '@/models/race'
+import type { TRaceHorse } from '@/models/horse'
 
 const { min, max } = HORSE_CONDITION_RANGE
 

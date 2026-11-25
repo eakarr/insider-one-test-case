@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { IHorse } from '@/models/race'
+import type { IHorse } from '@/models/horse'
 import { FlagIcon } from '@/components/common'
 
 interface IHorsePoolItemProps {
