@@ -85,6 +85,7 @@ export type TStandingsMode = 'lineup' | 'live' | 'final'
 export interface IRaceParticipant {
   lane: number
   horse: IHorse
+  /** Track progress as a percentage, from 0 to 100. */
   progress: number
 }
 
@@ -112,6 +113,7 @@ export interface IRaceRoundPresentation {
 }
 
 export interface IRaceDashboard {
+  horses: readonly IHorse[]
   rounds: readonly IRaceRoundPresentation[]
   round?: IRaceRoundPresentation
   standings: readonly IRaceStanding[]
