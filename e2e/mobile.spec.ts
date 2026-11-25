@@ -103,3 +103,42 @@ test('persists theme changes across reloads', async ({ page }) => {
   await expect(dark).toBeVisible()
   await expect(themeRoot).toHaveAttribute('data-theme', 'light')
 })
+
+test('centers the initial guide inside the lane area at narrow widths', async ({ page }) => {
+  for (const width of [320, 375, 393, 767]) {
+    await page.setViewportSize({ width, height: 852 })
+    await page.goto('/')
+    const track = page.getByRole('region', { name: 'Race track' })
+    const card = track.locator('.race-track__card')
+    const lanes = track.getByRole('list', { name: 'Race lanes' })
+    const [cardBox, laneBox] = await Promise.all([card.boundingBox(), lanes.boundingBox()])
+    if (!cardBox || !laneBox) throw new Error('Expected visible guide and lanes')
+    expect(Math.abs(cardBox.x + cardBox.width / 2 - laneBox.x - laneBox.width / 2)).toBeLessThan(1)
+    expect(Math.abs(cardBox.y + cardBox.height / 2 - laneBox.y - laneBox.height / 2)).toBeLessThan(
+      1,
+    )
+    expect(await page.locator('html').evaluate((root) => root.scrollWidth - root.clientWidth)).toBe(
+      0,
+    )
+  }
+})
+
+test('keeps the dashboard within the viewport across breakpoints and themes', async ({ page }) => {
+  for (const width of [320, 375, 768, 992, 1200, 1600]) {
+    await page.setViewportSize({ width, height: 768 })
+    await page.goto('/')
+    const header = page.getByRole('banner')
+    const track = page.getByRole('region', { name: 'Race track' })
+    await header.getByRole('button', { name: 'Generate program' }).click()
+    for (const theme of ['light', 'dark']) {
+      await expect(page.locator('html')).toHaveAttribute('data-theme', theme)
+      await expect(track.getByText('Ready to start')).toBeVisible()
+      expect(
+        await page.locator('html').evaluate((root) => root.scrollWidth - root.clientWidth),
+      ).toBe(0)
+      if (theme === 'light')
+        await header.getByRole('button', { name: 'Switch to dark theme' }).click()
+    }
+    await header.getByRole('button', { name: 'Switch to light theme' }).click()
+  }
+})
