@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+
 import horseRacingLogo from '@/assets/horse-racing.svg'
 import { ThemeToggle } from '@/components/common'
 import HorsePool from '@/components/horse-pool/horse-pool.vue'
@@ -7,25 +9,39 @@ import RaceControls from '@/components/race-controls/race-controls.vue'
 import RaceTrack from '@/components/race-track/race-track.vue'
 import RaceResults from '@/components/race-results/race-results.vue'
 import RaceProgram from '@/components/race-program/race-program.vue'
+import { useRaceClock } from '@/composables/use-race-clock'
 import { useRacePresentation } from '@/composables/use-race-presentation'
 import { useTheme } from '@/composables/use-theme'
 import { TOTAL_RACE_ROUNDS } from '@/constants/race'
+import type { THorseMotion } from '@/models/horse'
 import { useRaceStore } from '@/stores/race'
 
 const race = useRaceStore()
+const { isPageVisible, playbackSpeed, setPlaybackSpeed } = useRaceClock(race)
+
 const { theme, toggleTheme } = useTheme()
 const {
   horses,
   currentRound,
+  isRunningRound,
+  countdownCue,
   rounds,
   standings,
   canGenerateProgram,
   canStartRace,
+  canPause,
+  canResume,
   isDayComplete,
-  isRaceDayInProgress,
   standingsMode,
   horsePoolGroups,
 } = useRacePresentation(race)
+
+const isAnimationFrozen = computed(() => race.status === 'paused' || !isPageVisible.value)
+
+const horseMotion = computed<THorseMotion>(() => {
+  if (!isRunningRound.value) return 'still'
+  return isAnimationFrozen.value ? 'frozen' : 'galloping'
+})
 
 function handleGenerateProgram() {
   if (canGenerateProgram.value) race.generateProgram()
@@ -33,6 +49,14 @@ function handleGenerateProgram() {
 
 function handleStartRace() {
   if (canStartRace.value) race.startRace()
+}
+
+function handlePauseRace() {
+  if (canPause.value) race.pause()
+}
+
+function handleResumeRace() {
+  if (canResume.value) race.resume()
 }
 
 function handleRaceAgain() {
@@ -52,12 +76,17 @@ function handleRaceAgain() {
         <div class="dashboard-header__controls">
           <ThemeToggle :is-dark="theme === 'dark'" @toggle="toggleTheme" />
           <RaceControls
+            :playback-speed="playbackSpeed"
+            @change-speed="setPlaybackSpeed"
             :is-generate-disabled="!canGenerateProgram"
             :is-start-disabled="!canStartRace"
-            :is-race-day-in-progress="isRaceDayInProgress"
+            :can-pause="canPause"
+            :can-resume="canResume"
             :is-generate-primary="!currentRound"
             @generate-program="handleGenerateProgram"
             @start-race="handleStartRace"
+            @pause-race="handlePauseRace"
+            @resume-race="handleResumeRace"
           />
         </div>
       </div>
@@ -67,6 +96,11 @@ function handleRaceAgain() {
       <RaceTrack
         class="dashboard-layout__workspace"
         :round="currentRound"
+        :horse-motion="horseMotion"
+        :style="{ '--playback-speed': playbackSpeed }"
+        :countdown-cue="countdownCue"
+        :is-animation-frozen="isAnimationFrozen"
+        :is-paused="canResume"
         :is-day-complete="isDayComplete"
         :horse-count="horses.length"
         @generate-program="handleGenerateProgram"
@@ -128,8 +162,9 @@ function handleRaceAgain() {
   }
 
   &__controls {
-    display: flex;
+    display: grid;
     min-width: 0;
+    grid-template-columns: auto minmax(0, 1.2fr) minmax(0, 0.8fr);
     align-items: center;
     gap: var(--space-2);
   }
@@ -154,6 +189,10 @@ function handleRaceAgain() {
   .dashboard-header {
     &__inner {
       grid-template-columns: minmax(0, 1fr) auto;
+    }
+
+    &__controls {
+      display: flex;
     }
   }
 

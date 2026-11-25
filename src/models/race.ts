@@ -1,8 +1,9 @@
-import type { RACE_DISTANCES } from '@/constants/race'
+import type { RACE_DISTANCES, RACE_PLAYBACK_SPEEDS } from '@/constants/race'
 
 import type { IHorse, TRaceHorse } from './horse'
 
 export type TRaceDistance = (typeof RACE_DISTANCES)[number]
+export type TRacePlaybackSpeed = (typeof RACE_PLAYBACK_SPEEDS)[number]
 
 export interface IRaceLaneAssignment {
   readonly lane: number

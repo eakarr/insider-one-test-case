@@ -1,25 +1,44 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+
 import { Button } from '@/components/common'
+import { RACE_PLAYBACK_SPEEDS } from '@/constants/race'
+import type { TRacePlaybackSpeed } from '@/models/race'
 
 interface IRaceControlsProps {
+  playbackSpeed: TRacePlaybackSpeed
   isGenerateDisabled?: boolean
   isStartDisabled?: boolean
-  isRaceDayInProgress?: boolean
   isGeneratePrimary?: boolean
+  canPause?: boolean
+  canResume?: boolean
 }
 
-withDefaults(defineProps<IRaceControlsProps>(), {
+const props = withDefaults(defineProps<IRaceControlsProps>(), {
   isGenerateDisabled: false,
   isStartDisabled: true,
 })
 
 const emit = defineEmits<{
+  'change-speed': [speed: TRacePlaybackSpeed]
   'generate-program': []
   'start-race': []
+  'pause-race': []
+  'resume-race': []
 }>()
 
 const handleGenerateProgram = () => emit('generate-program')
-const handleStartRace = () => emit('start-race')
+const actionLabel = computed(() => {
+  if (props.canResume) return 'Resume'
+  if (props.canPause) return 'Pause'
+  return 'Start race'
+})
+
+function handleRaceAction() {
+  if (props.canResume) emit('resume-race')
+  else if (props.canPause) emit('pause-race')
+  else if (!props.isStartDisabled) emit('start-race')
+}
 </script>
 
 <template>
@@ -35,24 +54,33 @@ const handleStartRace = () => emit('start-race')
     <Button
       class="race-controls__button"
       variant="primary"
-      :disabled="isStartDisabled"
-      @click="handleStartRace"
+      :disabled="isStartDisabled && !canPause && !canResume"
+      @click="handleRaceAction"
     >
       <span class="race-controls__start-label">
         <span
+          v-for="label in ['Start race', 'Pause', 'Resume']"
+          :key="label"
           class="race-controls__label"
-          :class="{ 'race-controls__label--hidden': isRaceDayInProgress }"
+          :class="{ 'race-controls__label--hidden': label !== actionLabel }"
         >
-          Start race
-        </span>
-        <span
-          class="race-controls__label"
-          :class="{ 'race-controls__label--hidden': !isRaceDayInProgress }"
-        >
-          Racing...
+          {{ label }}
         </span>
       </span>
     </Button>
+    <div class="race-controls__speed" role="group" aria-label="Playback speed">
+      <button
+        v-for="speed in RACE_PLAYBACK_SPEEDS"
+        :key="speed"
+        type="button"
+        class="race-controls__speed-button"
+        :aria-pressed="playbackSpeed === speed"
+        :aria-label="`${speed} times playback speed`"
+        @click="emit('change-speed', speed)"
+      >
+        {{ speed }}×
+      </button>
+    </div>
   </div>
 </template>
 
@@ -60,11 +88,7 @@ const handleStartRace = () => emit('start-race')
 @use '@/styles/breakpoints' as bp;
 
 .race-controls {
-  display: grid;
-  min-width: 0;
-  flex: 1;
-  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
-  gap: var(--space-2);
+  display: contents;
 
   & > &__button {
     min-width: 0;
@@ -73,6 +97,37 @@ const handleStartRace = () => emit('start-race')
 
     @media (min-width: bp.$sm) {
       padding-inline: var(--space-3);
+    }
+  }
+
+  &__speed {
+    display: flex;
+    grid-column: 1 / -1;
+    gap: var(--space-1);
+    padding: var(--space-1);
+    border: 1px solid var(--color-line-strong);
+    border-radius: var(--radius-small);
+    background: var(--color-surface-subtle);
+  }
+
+  &__speed-button {
+    flex: 1;
+    min-width: 2.25rem;
+    min-height: 2.25rem;
+    border: 0;
+    border-radius: var(--radius-small);
+    color: var(--color-ink);
+    background: transparent;
+    font-weight: 700;
+    cursor: pointer;
+
+    &[aria-pressed='true'] {
+      color: var(--color-surface);
+      background: var(--color-ink);
+    }
+
+    &:hover:not([aria-pressed='true']) {
+      background: var(--color-surface);
     }
   }
 
@@ -93,6 +148,7 @@ const handleStartRace = () => emit('start-race')
   .race-controls {
     display: flex;
     flex: 0 1 auto;
+    gap: var(--space-2);
   }
 }
 </style>

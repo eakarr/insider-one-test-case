@@ -6,6 +6,8 @@ import type { IHorsePoolGroup } from '@/models/horse'
 import type { IRaceRoundPresentation, IRaceStanding, TStandingsMode } from '@/models/race'
 import type { useRaceStore } from '@/stores/race'
 
+const START_CUE_DURATION_MS = 600
+
 const colorNames = new Map<number, string>(
   HORSE_IDENTITIES.map(({ id, colorName }) => [id, colorName]),
 )
@@ -35,6 +37,15 @@ export function useRacePresentation(race: ReturnType<typeof useRaceStore>) {
   const phase = computed(() =>
     state.value.status === 'paused' ? state.value.interrupted : state.value,
   )
+
+  const isRunningRound = computed(() => phase.value.status === 'running')
+
+  const countdownCue = computed(() => {
+    const current = phase.value
+    if (current.status === 'countdown') return Math.ceil(current.remainingMs / 1000)
+    if (current.status === 'running' && current.elapsedMs < START_CUE_DURATION_MS) return 'START!'
+    return undefined
+  })
 
   const programRounds = computed<readonly IRaceRoundPresentation[]>(() =>
     (program.value?.rounds ?? []).map((round) => {
@@ -108,9 +119,8 @@ export function useRacePresentation(race: ReturnType<typeof useRaceStore>) {
   const isDayComplete = computed(() => availableActions.value.canRaceAgain)
   const canGenerateProgram = computed(() => availableActions.value.canGenerateProgram)
   const canStartRace = computed(() => availableActions.value.canStartRace)
-  const isRaceDayInProgress = computed(
-    () => Boolean(currentRound.value) && !canGenerateProgram.value && !isDayComplete.value,
-  )
+  const canPause = computed(() => availableActions.value.canPause)
+  const canResume = computed(() => availableActions.value.canResume)
   const standingsMode = computed<TStandingsMode>(() => {
     if (currentRound.value?.status === 'scheduled') return 'lineup'
     if (currentRound.value?.status === 'completed') return 'final'
@@ -146,12 +156,15 @@ export function useRacePresentation(race: ReturnType<typeof useRaceStore>) {
   return {
     horses,
     currentRound,
+    isRunningRound,
+    countdownCue,
     rounds,
     standings,
     canGenerateProgram,
     canStartRace,
+    canPause,
+    canResume,
     isDayComplete,
-    isRaceDayInProgress,
     standingsMode,
     horsePoolGroups,
   }

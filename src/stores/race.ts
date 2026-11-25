@@ -72,12 +72,6 @@ export const useRaceStore = defineStore('race', () => {
       ? calculateLiveStandings({ roundNumber: round.roundNumber, participants: participants.value })
       : []
   })
-  const countdownRemainingMs = computed(() =>
-    phase.value.status === 'countdown' ? phase.value.remainingMs : undefined,
-  )
-  const interRoundRemainingMs = computed(() =>
-    phase.value.status === 'round-complete' ? phase.value.remainingMs : undefined,
-  )
   const availableActions = computed(() => ({
     canGenerateProgram: status.value === 'idle' || status.value === 'ready',
     canStartRace: status.value === 'ready',
@@ -225,8 +219,6 @@ export const useRaceStore = defineStore('race', () => {
     participants,
     standings,
     results,
-    countdownRemainingMs,
-    interRoundRemainingMs,
     availableActions,
     initialize,
     generateProgram,
