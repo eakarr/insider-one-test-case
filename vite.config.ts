@@ -17,6 +17,12 @@ export default defineConfig({
       include: ['src/**/*.{ts,vue}'],
       exclude: ['src/**/__tests__/**', 'src/**/*.d.ts'],
       reporter: ['text', 'html'],
+      thresholds: {
+        statements: 90,
+        branches: 85,
+        functions: 90,
+        lines: 92,
+      },
     },
   },
 })
