@@ -15,11 +15,10 @@ A responsive horse-racing simulation built with Vue 3, TypeScript and Pinia for 
 
 ## Getting started
 
-Requires Node.js 24 and Corepack with Yarn 4.
+Requires Node.js 24 and Yarn Classic (1.22.x). If Yarn is not installed, run `npm install --global yarn@1`.
 
 ```sh
-corepack enable
-yarn install --immutable
+yarn install --frozen-lockfile
 yarn dev
 ```
 
@@ -36,13 +35,13 @@ Reset and Race Again retain the horse pool, theme and selected speed. Playback s
 
 ## Tech stack
 
-| Area              | Tools                                             |
-| ----------------- | ------------------------------------------------- |
-| UI                | Vue 3 Composition API, TypeScript, SCSS           |
-| State             | Pinia                                             |
-| Build and quality | Vite, Yarn 4, ESLint, Prettier, Husky, Commitlint |
-| Testing           | Vitest, Vue Test Utils, jsdom, Playwright         |
-| CI                | GitHub Actions                                    |
+| Area              | Tools                                           |
+| ----------------- | ----------------------------------------------- |
+| UI                | Vue 3 Composition API, TypeScript, SCSS         |
+| State             | Pinia                                           |
+| Build and quality | Vite, Yarn, ESLint, Prettier, Husky, Commitlint |
+| Testing           | Vitest, Vue Test Utils, jsdom, Playwright       |
+| CI                | GitHub Actions                                  |
 
 ## Architecture
 
@@ -94,9 +93,17 @@ Run `yarn build` and deploy `dist/` to a static host. No API server, credentials
 
 ## Notes
 
-- Browser storage restrictions may prevent Vue DevTools from initializing in development; verify such policies using the production preview.
+- Earlier development builds had a Vue DevTools storage limitation. Recheck restricted-storage behavior after dependency changes.
 - Automated browser and ARIA checks do not establish full accessibility compliance or real-device Safari compatibility.
 
 ## Git conventions
 
 Branches use `<type>/<verb>-<description>`. Commits follow Conventional Commits with lowercase imperative subjects, no trailing period and a maximum header length of 100 characters.
+
+## Author
+
+Emir Akar
+
+## License
+
+UNLICENSED. No open-source license has been granted for this case study. Third-party assets remain subject to their respective rights.

@@ -1,7 +1,10 @@
 {
   "name": "insider-one-test-case",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "A horse racing simulation built with Vue, TypeScript, and Pinia for the Insider One frontend developer case study.",
+  "author": "Emir Akar",
+  "license": "UNLICENSED",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -21,9 +24,9 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "@vue/devtools-api": "^8.2.1",
-    "pinia": "^4.1.0",
-    "vue": "^3.5.44"
+    "@vue/devtools-api": "8.2.1",
+    "pinia": "4.1.0",
+    "vue": "3.5.46"
   },
   "devDependencies": {
     "@commitlint/cli": "^21.2.4",
@@ -51,6 +54,5 @@
   },
   "engines": {
     "node": ">=24 <25"
-  },
-  "packageManager": "yarn@4.19.0+sha512.2cb9e5a36f7f11f2bc6ff444830d87368d419e0d83b6a0fb6077d3e6fed0f476c9514dff4ba4d84b049bd34ef32954e550f264ad2fbbfebcba6c89e869530bba"
+  }
 }

@@ -13,7 +13,7 @@ yarn test:e2e
 
 The V8 report includes executable production files, including untested files, and excludes tests and declarations. Global thresholds are 90% statements, 85% branches, 90% functions and 92% lines. HTML output is available at `coverage/index.html`.
 
-CI runs immutable installation, lint, formatting, type checking, coverage and production build. A separate browser job installs browser system dependencies and executes the E2E suite against a production preview.
+CI uses Yarn Classic (`yarn install --frozen-lockfile`) and runs, lint, formatting, type checking, coverage and production build. A separate browser job installs browser system dependencies and executes the E2E suite against a production preview.
 
 ## Validation scope
 

@@ -5,7 +5,7 @@ import pluginVue from 'eslint-plugin-vue'
 export default withVueTs(
   {
     name: 'app/ignores',
-    ignores: ['.yarn/**', 'coverage/**', 'dist/**', 'playwright-report/**', 'test-results/**'],
+    ignores: ['coverage/**', 'dist/**', 'playwright-report/**', 'test-results/**'],
   },
   pluginVue.configs['flat/essential'],
   vueTsConfigs.recommended,

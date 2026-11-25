@@ -21,15 +21,11 @@ jobs:
         with:
           node-version-file: .nvmrc
 
-      - name: Install Corepack and activate Yarn
-        run: |
-          npm install --global corepack@0.36.0
-          corepack enable
-          corepack install
-          yarn --version
+      - name: Install Yarn
+        run: npm install --global yarn@1
 
       - name: Install dependencies
-        run: yarn install --immutable
+        run: yarn install --frozen-lockfile
 
       - name: Lint
         run: yarn lint
@@ -68,15 +64,11 @@ jobs:
         with:
           node-version-file: .nvmrc
 
-      - name: Install Corepack and activate Yarn
-        run: |
-          npm install --global corepack@0.36.0
-          corepack enable
-          corepack install
-          yarn --version
+      - name: Install Yarn
+        run: npm install --global yarn@1
 
       - name: Install dependencies
-        run: yarn install --immutable
+        run: yarn install --frozen-lockfile
 
       - name: Install Playwright browsers and system dependencies
         run: yarn playwright install --with-deps chromium firefox webkit
