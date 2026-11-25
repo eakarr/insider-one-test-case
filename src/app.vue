@@ -26,10 +26,12 @@ const {
   canGenerateProgram,
   isReadyToStart,
   isDayComplete,
+  isRaceDayInProgress,
   standingsMode,
   horsePoolGroups,
   generateProgram: handleGenerateProgram,
   startRace: handleStartRace,
+  raceAgain: handleRaceAgain,
 } = useRacePreview(props.preview)
 </script>
 
@@ -47,6 +49,7 @@ const {
           <RaceControls
             :is-generate-disabled="!canGenerateProgram"
             :is-start-disabled="!isReadyToStart"
+            :is-race-day-in-progress="isRaceDayInProgress"
             :is-generate-primary="!currentRound"
             @generate-program="handleGenerateProgram"
             @start-race="handleStartRace"
@@ -62,6 +65,7 @@ const {
         :is-day-complete="isDayComplete"
         :horse-count="horses.length"
         @generate-program="handleGenerateProgram"
+        @race-again="handleRaceAgain"
       />
       <RaceStandings :standings="standings" :mode="standingsMode" />
       <div class="dashboard-layout__side-panels">

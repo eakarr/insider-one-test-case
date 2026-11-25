@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, useId } from 'vue'
+import { computed, nextTick, useId, useTemplateRef } from 'vue'
 
 import { PARTICIPANTS_PER_RACE, RACE_DISTANCES } from '@/constants/race'
 import type { IRaceRoundPresentation } from '@/models/race'
@@ -14,9 +14,10 @@ interface IRaceTrackProps {
 }
 
 const props = defineProps<IRaceTrackProps>()
-defineEmits<{ 'generate-program': []; 'race-again': [] }>()
+const emit = defineEmits<{ 'generate-program': []; 'race-again': [] }>()
 
 const headingId = useId()
+const actionCard = useTemplateRef<HTMLElement>('actionCard')
 const statusLabels = {
   scheduled: 'Ready to start',
   active: 'In progress',
@@ -33,6 +34,17 @@ const lanes = computed(() =>
     return { number, participant, position }
   }),
 )
+
+async function handleRaceAgain() {
+  const hadFocus = actionCard.value?.contains(document.activeElement)
+  emit('race-again')
+  if (!hadFocus) return
+
+  await nextTick()
+  if (!props.round && document.activeElement === document.body) {
+    actionCard.value?.querySelector('button')?.focus()
+  }
+}
 </script>
 
 <template>
@@ -87,6 +99,7 @@ const lanes = computed(() =>
 
       <div
         v-if="!round || isDayComplete"
+        ref="actionCard"
         class="race-track__card"
         :class="{ 'race-track__card--complete': isDayComplete }"
       >
@@ -100,9 +113,7 @@ const lanes = computed(() =>
               : 'Draw ten horses for each of the six rounds.'
           }}
         </p>
-        <Button v-if="isDayComplete" variant="primary" @click="$emit('race-again')"
-          >Race again</Button
-        >
+        <Button v-if="isDayComplete" variant="primary" @click="handleRaceAgain">Race again</Button>
         <Button v-else variant="primary" @click="$emit('generate-program')"
           >Generate program</Button
         >
