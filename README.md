@@ -1,13 +1,21 @@
-# Insider One Horse Racing
+# Horse Racing — Insider One Case Study
 
-A Vue 3 and TypeScript implementation of the Insider One horse-racing frontend case study.
+[![CI](https://github.com/eakarr/insider-one-test-case/actions/workflows/ci.yml/badge.svg)](https://github.com/eakarr/insider-one-test-case/actions/workflows/ci.yml)
 
-## Requirements
+A responsive horse-racing simulation built with Vue 3, TypeScript and Pinia for the Insider One frontend developer case study. Generate a race program, watch its six rounds unfold, and follow the standings and results in real time.
 
-- Node.js 24
-- Corepack with Yarn 4
+## Features
 
-## Development
+- 20 horses with unique identities and colors, and randomly generated conditions from 1 to 100.
+- Six rounds (1200, 1400, 1600, 1800, 2000 and 2200 m), each with 10 distinct horses.
+- Automatic countdowns, round transitions, animated horses, live standings and final results.
+- Pause, resume, reset and replay a race day; choose 1×, 2× or 3× playback.
+- Responsive dashboard, light/dark themes, keyboard controls, live announcements and reduced-motion support.
+- Deterministic simulation logic, automated unit/component tests and cross-browser E2E tests.
+
+## Getting started
+
+Requires Node.js 24 and Corepack with Yarn 4.
 
 ```sh
 corepack enable
@@ -15,83 +23,80 @@ yarn install --immutable
 yarn dev
 ```
 
-## Checks
+Open the local URL printed by Vite. To preview the production build, run `yarn build` followed by `yarn preview`.
 
-```sh
-yarn lint
-yarn format:check
-yarn typecheck
-yarn build
-```
+### How to play
 
-Use `yarn format` and `yarn lint:fix` to apply safe formatting and lint fixes.
+1. Select **Generate program** to draw the six round lineups.
+2. Select **Start race**. Each round begins with a three-second countdown and advances automatically.
+3. Use **Pause / Resume** or change playback speed at any time. Select **Reset race** and confirm to discard the unfinished program and results.
+4. Inspect the program and results panels. After the final round, **Race again** returns to program generation.
 
-## Tests
+Reset and Race Again retain the horse pool, theme and selected speed. Playback speed changes animation and running time, not simulated finish times or rankings.
 
-```sh
-yarn test
-yarn test:coverage
-yarn playwright install chromium firefox webkit
-yarn test:e2e
-```
+## Tech stack
 
-Vitest runs the unit and component tests co-located in `src/**/__tests__/`. Use `yarn test:watch`
-while editing. The coverage command prints a summary, writes `coverage/index.html`, and checks
-global minimums of 90% statements, 85% branches, 90% functions, and 92% lines.
-
-Playwright builds the app and starts Vite preview for the specs in `e2e/`. Chromium runs the race
-journeys and mobile checks. Firefox and WebKit run the mobile checks. Use `yarn test:e2e:ui` to
-inspect tests interactively.
-
-GitHub Actions runs lint, formatting, typecheck, Vitest coverage, and the production build.
-A separate job runs all three Playwright projects. The workflow uploads HTML coverage and
-retains screenshots and traces from browser failures.
+| Area              | Tools                                             |
+| ----------------- | ------------------------------------------------- |
+| UI                | Vue 3 Composition API, TypeScript, SCSS           |
+| State             | Pinia                                             |
+| Build and quality | Vite, Yarn 4, ESLint, Prettier, Husky, Commitlint |
+| Testing           | Vitest, Vue Test Utils, jsdom, Playwright         |
+| CI                | GitHub Actions                                    |
 
 ## Architecture
 
-The application follows a layered modular-monolith structure under `src/`. Vue components render
-the interface, composables manage reusable Vue behavior, Pinia stores orchestrate application
-state, and deterministic race logic remains in framework-independent domain modules.
-
-Directories and abstractions are added only when a requirement needs them. Shared components live
-under `components/common/`; feature components remain grouped by feature. Atomic Design guides
-composition without imposing additional directory levels.
-
-Bootstrap initializes Vue, Pinia, and global styles. App renders Main, which renders RacePage and
-its dashboard.
+The application uses a small layered modular monolith. Vue components render the dashboard, composables handle timing and presentation, the Pinia store manages the lifecycle, and framework-independent domain functions generate and simulate races.
 
 ```text
-src/bootstrap.ts
-  → src/app.vue
-    → src/components/main/main.vue
-      → src/components/race-page/race-page.vue
+src/
+├── assets/
+├── components/      # Shared and feature components
+├── composables/     # Clock, presentation, theme
+├── constants/
+├── domain/          # Pure race calculations
+├── helpers/         # Seeded randomness
+├── models/
+├── stores/
+├── styles/
+├── app.vue
+└── bootstrap.ts
+e2e/                 # Browser tests
 ```
 
-Global SCSS partials live directly in `src/styles/`. Horse and race types live in
-`src/models/horse.ts` and `src/models/race.ts`. The ESLint `vue/multi-word-component-names` rule is
-disabled to support component names such as Main.
+See [Architecture](docs/architecture.md) and [Race simulation](docs/race-engine.md) for the design decisions and timing model.
 
-## Race controls
+## Quality checks
 
-Generate a program, then start the race day. Six rounds run in sequence with a three-second
-countdown before each round and a results delay between rounds. The primary button switches between
-Start race, Pause, and Resume. Race Again returns to program generation with the same horse pool.
+| Command              | Purpose                                |
+| -------------------- | -------------------------------------- |
+| `yarn lint`          | ESLint                                 |
+| `yarn format:check`  | Prettier                               |
+| `yarn typecheck`     | TypeScript and Vue type checking       |
+| `yarn build`         | Production build                       |
+| `yarn test`          | Unit and component tests               |
+| `yarn test:watch`    | Vitest watch mode                      |
+| `yarn test:coverage` | V8 coverage with regression thresholds |
+| `yarn test:e2e`      | Playwright browser tests               |
+| `yarn test:e2e:ui`   | Interactive Playwright runner          |
 
-Playback defaults to 1×. Choose 1×, 2×, or 3× before, during, or while pausing a race. Speed changes
-affect running time and gallop cadence. Countdown and inter-round timing, simulated finish times, and
-rankings stay the same. The selected speed survives Race Again and resets on page reload.
+Install the browser binaries before the first E2E run:
 
-On mobile, the theme toggle and race actions share the first row. Equal-width playback options fill
-the second row. The dashboard respects reduced-motion preferences and suspends the clock when the
-page is hidden.
+```sh
+yarn playwright install chromium firefox webkit
+```
 
-If browser storage is blocked, Vue DevTools initialization can prevent development startup. Use
-`yarn build` and `yarn preview` to verify the production build under that browser policy.
+GitHub Actions runs quality checks and browser tests in separate jobs. HTML coverage is uploaded as an artifact; screenshots and traces are retained on browser failures. See [Testing and validation](docs/testing.md) for details and limits.
 
-## Git workflow
+## Deployment
 
-Branches use `<type>/<verb>-<description>` in lowercase kebab-case, such as
-`feature/add-project-setup` or `fix/resolve-race-timing`.
+Run `yarn build` and deploy `dist/` to a static host. No API server, credentials or environment variables are required. For a repository subpath deployment, configure Vite's base URL for that path before building.
 
-Commits follow Conventional Commits. Use an imperative description whose subject starts with a
-lowercase letter, has no trailing period, and keeps the complete header at 100 characters or fewer.
+## Notes
+
+- Browser storage restrictions may prevent Vue DevTools from initializing in development; verify such policies using the production preview.
+- Automated browser and ARIA checks do not establish full accessibility compliance or real-device Safari compatibility.
+
+## Git conventions
+
+Branches use `<type>/<verb>-<description>`. Commits follow Conventional Commits with lowercase imperative subjects, no trailing period and a maximum header length of 100 characters.
