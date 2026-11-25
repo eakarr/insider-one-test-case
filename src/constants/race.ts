@@ -1,6 +1,7 @@
 export const PARTICIPANTS_PER_RACE = 10
 export const RACE_DISTANCES = [1200, 1400, 1600, 1800, 2000, 2200] as const
 export const TOTAL_RACE_ROUNDS = RACE_DISTANCES.length
+export const RACE_PLAYBACK_SPEEDS = [1, 2, 3] as const
 export const RACE_COUNTDOWN_MS = 3000
 export const RACE_INTER_ROUND_DELAY_MS = 1500
 

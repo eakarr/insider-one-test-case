@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
-import type { IHorse } from '@/models/horse'
+import type { IHorse, THorseMotion } from '@/models/horse'
 import { HorseIcon } from '@/components/common'
 
 interface IRaceLaneProps {
@@ -9,6 +9,7 @@ interface IRaceLaneProps {
   horse?: IHorse
   progress?: number
   position?: number
+  horseMotion: THorseMotion
 }
 
 const props = withDefaults(defineProps<IRaceLaneProps>(), {
@@ -18,6 +19,10 @@ const props = withDefaults(defineProps<IRaceLaneProps>(), {
 
 const normalizedProgress = computed(() =>
   Number.isFinite(props.progress) ? Math.min(100, Math.max(0, props.progress)) : 0,
+)
+
+const motion = computed(() =>
+  normalizedProgress.value > 0 && normalizedProgress.value < 100 ? props.horseMotion : 'still',
 )
 
 const runnerStyle = computed(() => ({
@@ -56,7 +61,7 @@ const laneSummary = computed(() => {
       <span class="race-lane__finish-line"></span>
       <span v-if="horse" class="race-lane__runner-path" :style="runnerStyle">
         <span class="race-lane__runner">
-          <HorseIcon class="race-lane__horse" :color="horse.color" />
+          <HorseIcon class="race-lane__horse" :color="horse.color" :motion="motion" />
           <span class="race-lane__name" :title="horse.name">
             <b v-if="position" class="race-lane__position">#{{ position }}</b>
             <span class="race-lane__horse-name">{{ horse.name }}</span>
@@ -146,6 +151,7 @@ const laneSummary = computed(() => {
     position: absolute;
     inset-block-start: 50%;
     inset-inline-start: var(--runner-start);
+    // The horse icon's right edge travels from the start line to the near edge of the finish line.
     width: calc(100% - var(--start-line-position) - var(--finish-edge));
     transform: translateX(var(--race-progress)) translateY(-50%);
   }
@@ -159,7 +165,8 @@ const laneSummary = computed(() => {
   }
 
   &__horse {
-    margin-inline-start: auto;
+    width: var(--runner-width);
+    flex: none;
   }
 
   &__name {
