@@ -91,6 +91,33 @@ yarn playwright install chromium firefox webkit
 
 GitHub Actions runs quality checks and browser tests in separate jobs. HTML coverage is uploaded as an artifact; screenshots and traces are retained on browser failures. See [Testing and validation](docs/testing.md) for details and limits.
 
+## Performance
+
+The production application was audited using Google PageSpeed Insights (Lighthouse 13.6.0) on November 26, 2026, with an emulated Moto G Power on Slow 4G and an emulated desktop with custom throttling.
+
+| Category       |  Mobile | Desktop |
+| -------------- | ------: | ------: |
+| Performance    | 100/100 | 100/100 |
+| Accessibility  | 100/100 | 100/100 |
+| Best Practices | 100/100 | 100/100 |
+| SEO            | 100/100 | 100/100 |
+
+| Metric                         | Mobile | Desktop |
+| ------------------------------ | -----: | ------: |
+| First Contentful Paint (FCP)   |  0.8 s |   0.2 s |
+| Largest Contentful Paint (LCP) |  1.1 s |   0.3 s |
+| Total Blocking Time (TBT)      |   0 ms |    0 ms |
+| Cumulative Layout Shift (CLS)  |      0 |       0 |
+| Speed Index                    |  2.7 s |   0.6 s |
+
+| Mobile audit                                                          | Desktop audit                                                           |
+| --------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| ![Mobile PageSpeed Insights report](docs/images/pagespeed-mobile.png) | ![Desktop PageSpeed Insights report](docs/images/pagespeed-desktop.png) |
+
+[Run PageSpeed Insights](https://pagespeed.web.dev/analysis?url=https%3A%2F%2Finsider-one-test-case.vercel.app%2F)
+
+These results are laboratory measurements of the initial page load, not real-user data or race animation benchmarks. Scores may vary with testing conditions.
+
 ## Deployment
 
 Run `yarn build` and deploy `dist/` to a static host. No API server, credentials or environment variables are required. For a repository subpath deployment, configure Vite's base URL for that path before building.
